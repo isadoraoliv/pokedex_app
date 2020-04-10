@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:pokedex_app/app/modules/home/widgets/pokedex_item.dart';
 import 'package:pokedex_app/app/modules/shared/utils/app_dimensions.dart';
 import 'package:pokedex_app/app/modules/shared/utils/app_images.dart';
 import 'package:pokedex_app/app/modules/shared/widgets/app_bar_home.dart';
 import 'home_controller.dart';
+import 'models/pokedex_model.dart';
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -17,8 +20,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends ModularState<HomePage, HomeController> {
   @override
   void initState() {
-    //controller.getPokedexList();
     controller.fetchPokedexList();
+    controller.getImage();
     super.initState();
   }
 
@@ -55,14 +58,36 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
                   child: Container(
                     child: Observer(builder: (_) {
                       return (controller.listPokedex != null)
-                          ? ListView.builder(
-                              itemCount: controller.listPokedex.pokemon.length,
-                              itemBuilder: (_, index) {
-                                return ListTile(
-                                  title: Text(controller
-                                      .listPokedex.pokemon[index].name),
-                                );
-                              })
+                          ? AnimationLimiter(
+                              child: GridView.builder(
+                                physics: BouncingScrollPhysics(),
+                                padding: EdgeInsets.all(AppDimensions.medium),
+                                addAutomaticKeepAlives: true,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2),
+                                itemBuilder: (_, index) {
+                                  Pokemon pokemon =
+                                      controller.getPokemon(index: index);
+                                  return AnimationConfiguration.staggeredGrid(
+                                    position: index,
+                                    columnCount: 2,
+                                    child: ScaleAnimation(
+                                      child: GestureDetector(
+                                        child: PokedexItem(
+                                          types: pokemon.type,
+                                          index: index,
+                                          name: pokemon.name,
+                                          image: controller.getImage(
+                                              number: pokemon.num),
+                                        ),
+                                        onTap: () {},
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            )
                           : Center(
                               child: CircularProgressIndicator(),
                             );
