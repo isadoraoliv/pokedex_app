@@ -31,8 +31,6 @@ class Pokemon {
   String weight;
   String candy;
   String egg;
-  List<double> multipliers;
-  List<String> weaknesses;
   List<NextEvolution> nextEvolution;
   List<PrevEvolution> prevEvolution;
 
@@ -46,8 +44,6 @@ class Pokemon {
       this.weight,
       this.candy,
       this.egg,
-      this.multipliers,
-      this.weaknesses,
       this.nextEvolution,
       this.prevEvolution});
 
@@ -61,8 +57,6 @@ class Pokemon {
     weight = json['weight'];
     candy = json['candy'];
     egg = json['egg'];
-    multipliers = json['multipliers'].cast<double>();
-    weaknesses = json['weaknesses'].cast<String>();
     if (json['next_evolution'] != null) {
       nextEvolution = new List<NextEvolution>();
       json['next_evolution'].forEach((v) {
@@ -88,8 +82,6 @@ class Pokemon {
     data['weight'] = this.weight;
     data['candy'] = this.candy;
     data['egg'] = this.egg;
-    data['multipliers'] = this.multipliers;
-    data['weaknesses'] = this.weaknesses;
     if (this.nextEvolution != null) {
       data['next_evolution'] =
           this.nextEvolution.map((v) => v.toJson()).toList();
