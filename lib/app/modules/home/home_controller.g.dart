@@ -47,6 +47,26 @@ mixin _$HomeController on _HomeControllerBase, Store {
   }
 
   @override
+  dynamic getPokemon({int index}) {
+    final _$actionInfo = _$_HomeControllerBaseActionController.startAction();
+    try {
+      return super.getPokemon(index: index);
+    } finally {
+      _$_HomeControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  Widget getImage({String number}) {
+    final _$actionInfo = _$_HomeControllerBaseActionController.startAction();
+    try {
+      return super.getImage(number: number);
+    } finally {
+      _$_HomeControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     final string = 'listPokedex: ${listPokedex.toString()}';
     return '{$string}';

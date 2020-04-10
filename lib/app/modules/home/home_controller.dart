@@ -1,7 +1,7 @@
-import 'dart:convert';
-
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
-import 'package:http/http.dart' as http;
+import 'package:pokedex_app/app/modules/home/repository/pokedex_repository.dart';
 
 import 'models/pokedex_model.dart';
 
@@ -10,6 +10,10 @@ part 'home_controller.g.dart';
 class HomeController = _HomeControllerBase with _$HomeController;
 
 abstract class _HomeControllerBase with Store {
+  final PokedexRepository repo;
+
+  _HomeControllerBase(this.repo);
+
   @observable
   PokedexModel _listPokedex;
 
@@ -18,22 +22,26 @@ abstract class _HomeControllerBase with Store {
 
   @action
   fetchPokedexList() {
-    loadPokedex().then(
+    _listPokedex = null;
+    repo.loadPokedex().then(
       (pokeList) {
         _listPokedex = pokeList;
       },
     );
   }
 
-  Future<PokedexModel> loadPokedex() async {
-    try {
-      final response = await http.get(
-          'https://raw.githubusercontent.com/Biuni/PokemonGO-Pokedex/master/pokedex.json');
-      var decodeJson = jsonDecode(response.body);
-      return PokedexModel.fromJson(decodeJson);
-    } catch (error, stacktrace) {
-      print("Erro ao carregar lista" + stacktrace.toString());
-      return null;
-    }
+  @action
+  getPokemon({int index}) {
+    return _listPokedex.pokemon[index];
+  }
+
+  @action
+  Widget getImage({String number}) {
+    return CachedNetworkImage(
+        placeholder: (context, url) => Container(
+              color: Colors.transparent,
+            ),
+        imageUrl:
+            'https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/$number.png');
   }
 }
