@@ -8,7 +8,7 @@ class HomeModule extends ChildModule {
   @override
   List<Bind> get binds => [
         Bind((i) => PokedexRepository(i.get<Dio>())),
-        Bind((i) => HomeController()),
+        Bind((i) => HomeController(i.get<PokedexRepository>())),
       ];
 
   @override
